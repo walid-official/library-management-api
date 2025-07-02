@@ -1,4 +1,5 @@
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Model } from 'mongoose';
+import { BookDocument } from '../interfaces/book.interface';
 
 export enum Genre {
   FICTION = 'FICTION',
@@ -9,7 +10,7 @@ export enum Genre {
   FANTASY = 'FANTASY',
 }
 
-const bookSchema = new Schema(
+const bookSchema = new Schema<BookDocument>(
   {
     title: { type: String, required: true },
     author: { type: String, required: true },
@@ -22,8 +23,20 @@ const bookSchema = new Schema(
   { timestamps: true }
 );
 
+// 💡 Instance Method
 bookSchema.methods.updateAvailability = function () {
   this.available = this.copies > 0;
 };
 
-export const Book = mongoose.model('Book', bookSchema);
+bookSchema.pre('save', function (next) {
+  this.updateAvailability(); // ensures available is always correct
+  console.log('[PRE] Updating availability before saving...');
+  next();
+});
+
+
+bookSchema.post('save', function (doc) {
+  console.log(`[POST] Book "${doc.title}" saved successfully.`);
+});
+
+export const Book: Model<BookDocument> = mongoose.model<BookDocument>('Book', bookSchema);
