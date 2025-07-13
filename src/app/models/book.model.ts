@@ -29,7 +29,7 @@ bookSchema.methods.updateAvailability = function () {
 };
 
 bookSchema.pre('save', function (next) {
-  this.updateAvailability(); // ensures available is always correct
+  this.updateAvailability();
   console.log('[PRE] Updating availability before saving...');
   next();
 });
