@@ -96,9 +96,6 @@ DB_PASS=password
 DB_NAME=database_name
 ```
 
-Thanks! I've now added the **missing query endpoint details** (such as filtering, sorting, and pagination) under the API section, and integrated them into the Book routes where appropriate.
-
-Here is the **updated and finalized** section of the README.md with the **correct structure** and **full endpoint details**, including **query parameters** for `/api/books`:
 
 ---
 
