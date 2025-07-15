@@ -1,11 +1,29 @@
 import { Request, Response, NextFunction } from 'express';
 import { BookService } from '../services/book.service';
+import { bookZodSchema } from '../zodSchemas/book.zod';
+import { z } from 'zod';
 
 export const BookController = {
-  createBook: async (req: Request, res: Response, next: NextFunction) => {
+  createBook: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
-      const book = await BookService.createBook(req.body);
-      res.status(201).json({
+      const parsed = bookZodSchema.safeParse(req.body);
+
+      if (!parsed.success) {
+        const formatted = z.treeifyError(parsed.error);
+        return res.status(400).json({
+          success: false,
+          message: 'Validation failed',
+          errors: formatted,
+        });
+      }
+
+      const book = await BookService.createBook(parsed.data);
+
+      return res.status(201).json({
         success: true,
         message: 'Book created successfully',
         data: book,
@@ -15,10 +33,15 @@ export const BookController = {
     }
   },
 
-  getBooks: async (req: Request, res: Response, next: NextFunction) => {
+  getBooks: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
       const books = await BookService.getBooks(req.query);
-      res.json({
+
+      return res.json({
         success: true,
         message: 'Books retrieved successfully',
         data: books,
@@ -28,10 +51,15 @@ export const BookController = {
     }
   },
 
-  getBookById: async (req: Request, res: Response, next: NextFunction) => {
+  getBookById: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
       const book = await BookService.getBookById(req.params.bookId);
-      res.json({
+
+      return res.json({
         success: true,
         message: 'Book retrieved successfully',
         data: book,
@@ -41,10 +69,15 @@ export const BookController = {
     }
   },
 
-  updateBook: async (req: Request, res: Response, next: NextFunction) => {
+  updateBook: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
       const book = await BookService.updateBook(req.params.bookId, req.body);
-      res.json({
+
+      return res.json({
         success: true,
         message: 'Book updated successfully',
         data: book,
@@ -54,10 +87,15 @@ export const BookController = {
     }
   },
 
-  deleteBook: async (req: Request, res: Response, next: NextFunction) => {
+  deleteBook: async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
     try {
       await BookService.deleteBook(req.params.bookId);
-      res.json({
+
+      return res.json({
         success: true,
         message: 'Book deleted successfully',
         data: null,
