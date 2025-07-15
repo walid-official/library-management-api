@@ -14,7 +14,7 @@ const bookSchema = new Schema<BookDocument>(
   {
     title: { type: String, required: true },
     author: { type: String, required: true },
-    genre: { type: String, enum: Object.values(Genre), required: true },
+    genre: { type: String, enum: Object.values(Genre), required: true, uppercase: true },
     isbn: { type: String, required: true, unique: true },
     description: { type: String },
     copies: { type: Number, required: true, min: 0 },
