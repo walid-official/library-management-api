@@ -8,7 +8,7 @@ export const borrowBook = async (
   res: Response
 ): Promise<any> => {
   try {
-    // ✅ Validate payload
+    // Validate payload
     const parsed = borrowZodSchema.safeParse(req.body);
 
     if (!parsed.success) {

@@ -23,10 +23,16 @@ const bookSchema = new Schema<BookDocument>(
   { timestamps: true }
 );
 
-// 💡 Instance Method
-bookSchema.methods.updateAvailability = function () {
-  this.available = this.copies > 0;
+//  Instance Method
+bookSchema.methods.updateAvailability = function (): boolean {
+  if (this.copies > 0) {
+    this.available = true;
+  } else {
+    this.available = false;
+  }
+  return this.available;
 };
+
 
 bookSchema.pre('save', function (next) {
   this.updateAvailability();
